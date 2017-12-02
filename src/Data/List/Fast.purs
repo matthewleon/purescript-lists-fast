@@ -3,6 +3,8 @@
 
 module Data.List.Fast
   ( FastList(..)
+  , map
+  , filter
   ) where
 
 import Prelude hiding (map)

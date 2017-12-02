@@ -1,25 +1,47 @@
-module Test.Data.List (testList) where
+module Test.Data.List.Fast (testFastList) where
 
-import Prelude
-import Data.List.NonEmpty as NEL
+import Prelude hiding (map)
+
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
-import Data.Foldable (foldMap, foldl)
-import Data.List.Fast (FastList(..), (..), stripPrefix, Pattern(..), length, range, foldM, unzip, zip, zipWithA, zipWith, intersectBy, intersect, (\\), deleteBy, delete, unionBy, union, nubBy, nub, groupBy, group', group, partition, span, dropWhile, drop, dropEnd, takeWhile, take, takeEnd, sortBy, sort, catMaybes, mapMaybe, filterM, filter, concat, concatMap, reverse, alterAt, modifyAt, updateAt, deleteAt, insertAt, findLastIndex, findIndex, elemLastIndex, elemIndex, (!!), uncons, unsnoc, init, tail, last, head, insertBy, insert, snoc, null, singleton, fromFoldable, transpose, mapWithIndex, (:))
-import Data.Maybe (Maybe(..), isNothing, fromJust)
-import Data.Monoid.Additive (Additive(..))
-import Data.NonEmpty ((:|))
-import Data.Traversable (traverse)
-import Data.Tuple (Tuple(..))
-import Data.Unfoldable (replicate, replicateA, unfoldr)
-import Partial.Unsafe (unsafePartial)
+import Control.Monad.Eff.Console (CONSOLE, log, logShow)
+import Data.Filterable (filter)
+import Data.Functor (map) as F
+import Data.Int (odd)
+import Data.List (fromFoldable, (..))
+import Data.List.Fast (FastList(..))
+import Data.List.Fast as FL
+import Data.Newtype (unwrap)
 import Test.Assert (ASSERT, assert)
-
 
 testFastList :: forall eff. Eff (assert :: ASSERT, console :: CONSOLE | eff) Unit
 testFastList = do
   let l = fromFoldable
 
+  log "map should maintain order"
+  assert $ (1..5) == FL.map id (1..5)
+
+  log "map should maintain order (newtype)"
+  assert $ FastList (1..5) == F.map id (FastList (1..5))
+
+  log "map should be stack-safe"
+  void $ pure $ FL.map id (1..100000)
+
+  log "map should be stack-safe (newtype)"
+  void $ pure $ F.map id (FastList (1..100000))
+
+  log "map should be correct"
+  assert $ F.map (_ * 2) (1..5) == unwrap (F.map (_ * 2) $ FastList (1..5))
+
+  log "filter should remove items that don't match a predicate"
+  logShow <<< FL.filter odd $ 0..10
+
+{-
+  log "filter should remove items that don't match a predicate"
+  logShow $ filter odd (FastList (0..10))
+  assert $ filter odd (FastList (0..10)) == FastList (l [1, 3, 5, 7, 9])
+-}
+
+{-
   log "strip prefix"
   assert $ stripPrefix (Pattern (1:Nil)) (1:2:Nil) == Just (2:Nil)
   assert $ stripPrefix (Pattern Nil) (1:Nil) == Just (1:Nil)
@@ -377,3 +399,4 @@ odd n = n `mod` 2 /= zero
 
 doubleAndOrig :: Int -> List Int
 doubleAndOrig x = Cons (x * 2) (Cons x Nil)
+-}

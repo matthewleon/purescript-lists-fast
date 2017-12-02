@@ -76,6 +76,8 @@ exports.filter = function(f) {
 
       output.value1 = Nil.value;
 
+      console.log(result);
+
       return result;
     }
   }
