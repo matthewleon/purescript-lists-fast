@@ -1,8 +1,8 @@
 "use strict";
 
 exports.map = function(f) {
-  var Nil = require('Data.List.Types').Nil;
-  var Cons = require('Data.List.Types').Cons;
+  var Nil = require("Data.List.Types").Nil;
+  var Cons = require("Data.List.Types").Cons;
 
   return function(l) {
     if (l === Nil.value) {
@@ -32,12 +32,12 @@ exports.map = function(f) {
 
       return result;
     }
-  }
-}
+  };
+};
 
 exports.filter = function(f) {
-  var Nil = require('Data.List.Types').Nil;
-  var Cons = require('Data.List.Types').Cons;
+  var Nil = require("Data.List.Types").Nil;
+  var Cons = require("Data.List.Types").Cons;
 
   return function(l) {
     var input = l;
@@ -66,12 +66,12 @@ exports.filter = function(f) {
 
       return result;
     }
-  }
-}
+  };
+};
 
 exports.zipWith = function(f) {
-  var Nil = require('Data.List.Types').Nil;
-  var Cons = require('Data.List.Types').Cons;
+  var Nil = require("Data.List.Types").Nil;
+  var Cons = require("Data.List.Types").Cons;
 
   return function(l1) {
     return function(l2) {
@@ -103,6 +103,6 @@ exports.zipWith = function(f) {
 
         return result;
       }
-    }
-  }
-}
+    };
+  };
+};
